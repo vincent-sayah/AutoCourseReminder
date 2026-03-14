@@ -1,4 +1,4 @@
-# AutoCourseReminder
+# AutoCourseReminder - ILIAS 10
 
 AutoCourseReminder est un plugin compatible **ILIAS 10** permettant d’envoyer automatiquement des rappels aux utilisateurs inactifs dans un cours, tant que leur progression est encore **en cours**.
 
@@ -20,7 +20,7 @@ L’utilisateur peut se **désinscrire** des rappels pour un cours via un lien p
 
 ## Version cible
 
-- **ILIAS 10**
+- **ILIAS 10.5**
 - Base de données testée : **MariaDB**
 
 ---
