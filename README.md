@@ -1,52 +1,81 @@
-# AutoCourseReminder for ILIAS 10
+# AutoCourseReminder
 
-## Slot plugin
+AutoCourseReminder est un plugin compatible **ILIAS 10** permettant d’envoyer automatiquement des rappels aux utilisateurs inactifs dans un cours, tant que leur progression est encore **en cours**.
 
-User Interface Hook plugin, with cron job provider.
+Les rappels sont envoyés dans la **messagerie interne ILIAS**.  
+L’utilisateur peut se **désinscrire** des rappels pour un cours via un lien présent dans la notification.
 
-## Installation path
+---
 
-```text
-<ILIAS>/public/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/AutoCourseReminder
-```
+## Fonctionnalités
 
-## Important cleanup before install
+- rappel automatique après une période définie d’inactivité dans un cours ;
+- prise en compte des utilisateurs dont le statut de progression est **in progress** ;
+- relances multiples possibles ;
+- désactivation des rappels par l’utilisateur pour un cours donné ;
+- notifications envoyées dans la messagerie interne ILIAS ;
+- gestion centralisée de la configuration via l’administration du plugin.
 
-Remove **all previous attempts** of this plugin from both slots if they exist:
+---
+
+## Version cible
+
+- **ILIAS 10**
+- Base de données testée : **MariaDB**
+
+---
+
+## Installation
+
+### 1. Copier le plugin
+
+Déposer le dossier du plugin dans le répertoire suivant :
 
 ```bash
-rm -rf <ILIAS>/public/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/AutoCourseReminder
-rm -rf <ILIAS>/public/Customizing/global/plugins/Services/Cron/CronHook/AutoCourseReminder
+public/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/AutoCourseReminder
 ```
 
-Then copy this package only into the UIHook slot and run:
+### 2. Mettre à jour les artefacts ILIAS
+
+Depuis la racine de l’installation ILIAS :
 
 ```bash
-cd <ILIAS>
 composer du
 ```
 
-## What this plugin does
+### 3. Installer le plugin
 
-- Tracks user activity in a course through the UI hook.
-- Provides a cron job visible in ILIAS cron administration.
-- Sends reminder emails for:
-  - inactivity in a course while LP is in progress
-  - missing completion of a configured step item
-- Supports repeated reminders.
-- Lets the user disable reminders by email link.
+Dans l’administration ILIAS :
+
+- aller dans **Administration**
+- puis **Plugins**
+- ouvrir le slot **User Interface Hook**
+- installer **AutoCourseReminder**
+- activer le plugin
+
+### 4. Configurer le plugin
+
+Dans l’écran de configuration du plugin, renseigner :
+
+- `base_url`
+- `client_id`
+- `mail_from`
+- `mail_from_name`
+- `rules_json`
+
+---
 
 ## Configuration
 
-Configure the plugin in administration and paste JSON rules.
+La configuration principale des règles se fait via le champ `rules_json`.
 
-Example:
+Exemple pour un cours avec `ref_id = 89` :
 
 ```json
 [
   {
-    "rule_key": "course_123_inactivity",
-    "course_ref_id": 123,
+    "rule_key": "course_89_inactivity",
+    "course_ref_id": 89,
     "rule_type": "inactivity",
     "delay_days": 5,
     "repeat_every_days": 5,
@@ -54,26 +83,151 @@ Example:
     "allow_opt_out": true,
     "active": true,
     "subject": "[ILIAS] Rappel d'activité - {{COURSE_TITLE}}",
-    "body": "Bonjour {{FIRSTNAME}},\n\nAucune activité n'a été détectée dans le cours \"{{COURSE_TITLE}}\" depuis {{INACTIVITY_DAYS}} jour(s).\n\nReprendre : {{COURSE_URL}}\n{{OPTOUT_BLOCK}}\n\nCordialement,\n{{MAIL_FROM_NAME}}"
-  },
-  {
-    "rule_key": "course_123_step_456",
-    "course_ref_id": 123,
-    "rule_type": "step",
-    "step_ref_id": 456,
-    "delay_days": 7,
-    "repeat_every_days": 4,
-    "max_reminders": 2,
-    "allow_opt_out": true,
-    "active": false,
-    "subject": "[ILIAS] Étape à compléter - {{COURSE_TITLE}}",
-    "body": "Bonjour {{FIRSTNAME}},\n\nUne étape du cours \"{{COURSE_TITLE}}\" n'est pas encore complétée.\n\nReprendre : {{COURSE_URL}}\n{{OPTOUT_BLOCK}}\n\nCordialement,\n{{MAIL_FROM_NAME}}"
+    "body": "Bonjour {{FIRSTNAME}},\n\nAucune activité n'a été détectée dans le cours \"{{COURSE_TITLE}}\" depuis {{INACTIVITY_DAYS}} jour(s).\n\nReprendre le cours : {{COURSE_URL}}\n{{OPTOUT_BLOCK}}\n\nCordialement,\n{{MAIL_FROM_NAME}}"
   }
 ]
 ```
 
-## Notes
+---
 
-- The cron job must be activated in **Administration > General Settings > Cron Jobs**.
-- `step_ref_id` must be the ref_id of the step item to monitor.
-- Activity tracking starts when users navigate inside the course tree after plugin activation.
+## Paramètres des règles
+
+### Champs principaux
+
+- `rule_key` : identifiant unique de la règle
+- `course_ref_id` : `ref_id` du cours ILIAS
+- `rule_type` : type de règle, actuellement `inactivity`
+- `delay_days` : délai avant le premier rappel
+- `repeat_every_days` : délai entre deux relances
+- `max_reminders` : nombre maximal de rappels
+- `allow_opt_out` : autorise ou non la désinscription
+- `active` : active ou désactive la règle
+- `subject` : sujet du message
+- `body` : contenu du message
+
+### Variables disponibles dans le message
+
+- `{{FIRSTNAME}}`
+- `{{LASTNAME}}`
+- `{{FULLNAME}}`
+- `{{COURSE_TITLE}}`
+- `{{COURSE_URL}}`
+- `{{INACTIVITY_DAYS}}`
+- `{{MAIL_FROM_NAME}}`
+- `{{OPTOUT_BLOCK}}`
+
+---
+
+## Fonctionnement
+
+Le plugin surveille l’activité des utilisateurs dans les cours configurés.
+
+Lorsqu’un utilisateur :
+
+- est membre du cours ;
+- a un statut de progression **en cours** ;
+- est inactif depuis au moins `delay_days` ;
+- n’a pas déjà atteint la limite de relances ;
+- ne s’est pas désinscrit ;
+
+alors le plugin envoie un rappel dans la **messagerie interne ILIAS**.
+
+Les relances suivantes sont envoyées selon `repeat_every_days`.
+
+---
+
+## Désinscription des rappels
+
+Si `allow_opt_out` est activé, le message contient un lien permettant à l’utilisateur de ne plus recevoir de rappels pour ce cours.
+
+La désinscription est enregistrée en base dans la table :
+
+```text
+ui_uihk_acrm_optout
+```
+
+---
+
+## Tables utilisées
+
+Le plugin utilise les tables suivantes :
+
+- `ui_uihk_acrm_settings`
+- `ui_uihk_acrm_activity`
+- `ui_uihk_acrm_dispatch`
+- `ui_uihk_acrm_optout`
+
+### Rôle des tables
+
+- `settings` : configuration du plugin
+- `activity` : suivi d’activité par utilisateur et par cours
+- `dispatch` : historique du dernier envoi par règle/utilisateur
+- `optout` : désinscription des rappels
+
+---
+
+## Test rapide
+
+### Simuler une inactivité de plus de 24h
+
+Exemple pour l’utilisateur `328` et le cours `89` :
+
+```sql
+UPDATE ui_uihk_acrm_activity
+SET last_seen = NOW() - INTERVAL 2 DAY
+WHERE user_id = 328
+  AND course_ref_id = 89;
+```
+
+### Réinitialiser l’historique d’envoi
+
+```sql
+DELETE FROM ui_uihk_acrm_dispatch
+WHERE user_id = 328
+  AND rule_key = 'course_89_inactivity';
+```
+
+### Vérifier la désinscription
+
+```sql
+SELECT *
+FROM ui_uihk_acrm_optout
+WHERE user_id = 328
+  AND course_ref_id = 89;
+```
+
+---
+
+## Points importants
+
+- le plugin envoie les rappels dans la **messagerie interne ILIAS** ;
+- la redirection externe éventuelle dépend de la configuration et des préférences ILIAS ;
+- une première activité dans le cours est nécessaire pour qu’un utilisateur soit ensuite considéré comme inactif ;
+- si l’utilisateur se désinscrit, aucun nouveau rappel ne doit être envoyé pour le cours concerné.
+
+---
+
+## Limitations de cette première version
+
+Cette première version est volontairement simple :
+
+- configuration des règles en JSON ;
+- configuration centralisée au niveau plugin ;
+- pas encore d’interface dédiée par cours ;
+- pas encore de journal d’administration détaillé des envois.
+
+---
+
+## Feuille de route possible
+
+- interface d’administration plus conviviale ;
+- configuration par cours ;
+- journalisation détaillée des envois ;
+- réactivation des rappels par l’utilisateur ;
+- support de règles supplémentaires basées sur des étapes ou objets spécifiques.
+
+---
+
+## Auteur
+
+Développé pour un besoin de rappels automatiques dans ILIAS 10.
