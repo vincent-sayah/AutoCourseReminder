@@ -230,4 +230,4 @@ Cette première version est volontairement simple :
 
 ## Auteur
 
-Développé pour un besoin de rappels automatiques dans ILIAS 10.
+vince.syh@free.fr
