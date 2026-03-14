@@ -1,0 +1,13 @@
+plugin_name#:#AutoCourseReminder
+config_title#:#Configuration des rappels automatiques
+save#:#Enregistrer
+config_saved#:#Configuration enregistrée.
+base_url#:#URL de base ILIAS
+base_url_info#:#Laisser vide pour utiliser ILIAS_HTTP_PATH.
+client_id#:#Client ID
+mail_from#:#Adresse expéditeur
+mail_from_name#:#Nom expéditeur
+rules_json#:#Règles JSON
+rules_json_info#:#Une règle par cours. Types supportés : inactivity, step.
+optout_saved#:#Vos rappels pour ce cours ont été désactivés.
+optout_invalid#:#Lien de désactivation invalide ou expiré.
