@@ -114,3 +114,59 @@ if (!$ilDB->primaryExistsByFields('ui_uihk_acrm_optout', ['user_id', 'course_ref
     $ilDB->addPrimaryKey('ui_uihk_acrm_optout', ['user_id', 'course_ref_id']);
 }
 ?>
+
+
+<#5>
+<?php
+if (!$ilDB->tableExists('ui_uihk_acrm_crule')) {
+    $fields = [
+        'course_ref_id' => [
+            'type' => 'integer',
+            'length' => 4,
+            'notnull' => true,
+        ],
+        'active' => [
+            'type' => 'integer',
+            'length' => 1,
+            'notnull' => true,
+            'default' => 0,
+        ],
+        'delay_days' => [
+            'type' => 'integer',
+            'length' => 4,
+            'notnull' => true,
+            'default' => 5,
+        ],
+        'repeat_every_days' => [
+            'type' => 'integer',
+            'length' => 4,
+            'notnull' => true,
+            'default' => 5,
+        ],
+        'max_reminders' => [
+            'type' => 'integer',
+            'length' => 4,
+            'notnull' => true,
+            'default' => 3,
+        ],
+        'allow_opt_out' => [
+            'type' => 'integer',
+            'length' => 1,
+            'notnull' => true,
+            'default' => 1,
+        ],
+        'subject' => [
+            'type' => 'clob',
+            'notnull' => false,
+        ],
+        'body' => [
+            'type' => 'clob',
+            'notnull' => false,
+        ],
+    ];
+    $ilDB->createTable('ui_uihk_acrm_crule', $fields);
+}
+if (!$ilDB->primaryExistsByFields('ui_uihk_acrm_crule', ['course_ref_id'])) {
+    $ilDB->addPrimaryKey('ui_uihk_acrm_crule', ['course_ref_id']);
+}
+?>

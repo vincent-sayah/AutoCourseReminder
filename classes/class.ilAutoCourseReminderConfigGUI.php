@@ -9,7 +9,7 @@ if (!defined('ACR_ILIAS_ROOT')) {
 require_once ACR_ILIAS_ROOT . '/components/ILIAS/Component/classes/class.ilPluginConfigGUI.php';
 require_once ACR_ILIAS_ROOT . '/components/ILIAS/Form/classes/class.ilPropertyFormGUI.php';
 require_once ACR_ILIAS_ROOT . '/components/ILIAS/Form/classes/class.ilTextInputGUI.php';
-require_once ACR_ILIAS_ROOT . '/components/ILIAS/Form/classes/class.ilTextAreaInputGUI.php';
+require_once ACR_ILIAS_ROOT . '/components/ILIAS/Form/classes/class.ilFormSectionHeaderGUI.php';
 
 /**
  * @ilCtrl_IsCalledBy ilAutoCourseReminderConfigGUI: ilObjComponentSettingsGUI
@@ -38,22 +38,12 @@ class ilAutoCourseReminderConfigGUI extends ilPluginConfigGUI
             return;
         }
 
-        $rulesJson = trim((string) $form->getInput('rules_json'));
-        json_decode($rulesJson, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->tpl()->setOnScreenMessage('failure', 'JSON invalide : ' . json_last_error_msg(), false);
-            $form->setValuesByPost();
-            $this->tpl()->setContent($form->getHTML());
-            return;
-        }
-
         $plugin = $this->plugin();
         $repo = $plugin->getRepository();
         $repo->setSetting('base_url', trim((string) $form->getInput('base_url')));
         $repo->setSetting('client_id', trim((string) $form->getInput('client_id')));
         $repo->setSetting('mail_from', trim((string) $form->getInput('mail_from')));
         $repo->setSetting('mail_from_name', trim((string) $form->getInput('mail_from_name')));
-        $repo->setSetting('rules_json', $rulesJson);
 
         if ($repo->getSetting('token_secret', '') === '') {
             $repo->setSetting('token_secret', bin2hex(random_bytes(24)));
@@ -72,6 +62,10 @@ class ilAutoCourseReminderConfigGUI extends ilPluginConfigGUI
         $form->setTitle($plugin->txt('config_title'));
         $form->setFormAction($this->ctrl()->getFormAction($this));
         $form->addCommandButton('save', $plugin->txt('save'));
+
+        $technical = new ilFormSectionHeaderGUI();
+        $technical->setTitle($plugin->txt('technical_settings'));
+        $form->addItem($technical);
 
         $baseUrl = new ilTextInputGUI($plugin->txt('base_url'), 'base_url');
         $baseUrl->setRequired(false);
@@ -94,48 +88,17 @@ class ilAutoCourseReminderConfigGUI extends ilPluginConfigGUI
         $mailFromName->setValue((string) $repo->getSetting('mail_from_name', 'ILIAS'));
         $form->addItem($mailFromName);
 
-        $rules = new ilTextAreaInputGUI($plugin->txt('rules_json'), 'rules_json');
-        $rules->setRequired(true);
-        $rules->setRows(24);
-        $rules->setCols(120);
-        $rules->setInfo($plugin->txt('rules_json_info'));
-        $rules->setValue((string) $repo->getSetting('rules_json', $this->getDefaultRulesJson()));
-        $form->addItem($rules);
+        $course = new ilFormSectionHeaderGUI();
+        $course->setTitle($plugin->txt('course_level_configuration'));
+        $form->addItem($course);
+
+        $hint = new ilTextInputGUI($plugin->txt('course_level_configuration_hint'), 'course_level_configuration_hint');
+        $hint->setValue($plugin->txt('course_level_configuration_hint_value'));
+        $hint->setDisabled(true);
+        $form->addItem($hint);
 
         return $form;
     }
-
-    private function getDefaultRulesJson(): string
-    {
-        return json_encode([
-            [
-                'rule_key' => 'course_123_inactivity',
-                'course_ref_id' => 123,
-                'rule_type' => 'inactivity',
-                'delay_days' => 5,
-                'repeat_every_days' => 5,
-                'max_reminders' => 3,
-                'allow_opt_out' => true,
-                'active' => true,
-                'subject' => '[ILIAS] Rappel d\'activité - {{COURSE_TITLE}}',
-                'body' => "Bonjour {{FIRSTNAME}},\n\nAucune activité n'a été détectée dans le cours \"{{COURSE_TITLE}}\" depuis {{INACTIVITY_DAYS}} jour(s).\n\nReprendre : {{COURSE_URL}}\n{{OPTOUT_BLOCK}}\n\nCordialement,\n{{MAIL_FROM_NAME}}",
-            ],
-            [
-                'rule_key' => 'course_123_step_456',
-                'course_ref_id' => 123,
-                'rule_type' => 'step',
-                'step_ref_id' => 456,
-                'delay_days' => 7,
-                'repeat_every_days' => 4,
-                'max_reminders' => 2,
-                'allow_opt_out' => true,
-                'active' => false,
-                'subject' => '[ILIAS] Étape à compléter - {{COURSE_TITLE}}',
-                'body' => "Bonjour {{FIRSTNAME}},\n\nUne étape du cours \"{{COURSE_TITLE}}\" n'est pas encore complétée.\n\nReprendre : {{COURSE_URL}}\n{{OPTOUT_BLOCK}}\n\nCordialement,\n{{MAIL_FROM_NAME}}",
-            ],
-        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-    }
-
 
     private function ctrl(): ilCtrl
     {
@@ -146,9 +109,9 @@ class ilAutoCourseReminderConfigGUI extends ilPluginConfigGUI
 
     private function tpl()
     {
-        global $DIC;
+        global $tpl;
 
-        return $DIC['tpl'];
+        return $tpl;
     }
 
     private function plugin(): ilAutoCourseReminderPlugin

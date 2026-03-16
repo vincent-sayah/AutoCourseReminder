@@ -14,7 +14,7 @@ L’utilisateur peut se **désinscrire** des rappels pour un cours via un lien p
 - relances multiples possibles ;
 - désactivation des rappels par l’utilisateur pour un cours donné ;
 - notifications envoyées dans la messagerie interne ILIAS ;
-- gestion centralisée de la configuration via l’administration du plugin.
+- configuration technique centralisée au niveau du plugin et configuration des rappels dans chaque cours.
 
 ---
 
@@ -61,55 +61,35 @@ Dans l’écran de configuration du plugin, renseigner :
 - `client_id`
 - `mail_from`
 - `mail_from_name`
-- `rules_json`
 
 ---
 
 ## Configuration
 
-La configuration principale des règles se fait via le champ `rules_json`.
+La configuration technique du plugin se fait toujours dans l’administration du plugin :
 
-Exemple pour un cours avec `ref_id = 89` :
+- `base_url`
+- `client_id`
+- `mail_from`
+- `mail_from_name`
 
-```json
-[
-  {
-    "rule_key": "course_89_inactivity",
-    "course_ref_id": 89,
-    "rule_type": "inactivity",
-    "delay_days": 5,
-    "repeat_every_days": 5,
-    "max_reminders": 3,
-    "allow_opt_out": true,
-    "active": true,
-    "subject": "[ILIAS] Rappel d'activité - {{COURSE_TITLE}}",
-    "body": "Bonjour {{FIRSTNAME}},\n\nAucune activité n'a été détectée dans le cours \"{{COURSE_TITLE}}\" depuis {{INACTIVITY_DAYS}} jour(s).\n\nReprendre le cours : {{COURSE_URL}}\n{{OPTOUT_BLOCK}}\n\nCordialement,\n{{MAIL_FROM_NAME}}"
-  }
-]
-```
+La configuration fonctionnelle des rappels se fait désormais **dans chaque cours**, depuis l’onglet **Paramètres** puis le sous-onglet **Rappels automatiques**.
 
----
+### Paramètres disponibles par cours
 
-## Paramètres des règles
-
-### Champs principaux
-
-- `rule_key` : identifiant unique de la règle
-- `course_ref_id` : `ref_id` du cours ILIAS
-- `rule_type` : type de règle, actuellement `inactivity`
-- `delay_days` : délai avant le premier rappel
-- `repeat_every_days` : délai entre deux relances
-- `max_reminders` : nombre maximal de rappels
-- `allow_opt_out` : autorise ou non la désinscription
-- `active` : active ou désactive la règle
-- `subject` : sujet du message
-- `body` : contenu du message
+- activation ou non des rappels ;
+- délai avant le premier rappel ;
+- délai entre deux relances ;
+- nombre maximal de rappels ;
+- autorisation de désinscription ;
+- sujet du message ;
+- corps du message.
 
 ### Variables disponibles dans le message
 
 - `{{FIRSTNAME}}`
 - `{{LASTNAME}}`
-- `{{FULLNAME}}`
+- `{{LOGIN}}`
 - `{{COURSE_TITLE}}`
 - `{{COURSE_URL}}`
 - `{{INACTIVITY_DAYS}}`
@@ -156,6 +136,7 @@ Le plugin utilise les tables suivantes :
 - `ui_uihk_acrm_activity`
 - `ui_uihk_acrm_dispatch`
 - `ui_uihk_acrm_optout`
+- `ui_uihk_acrm_crule`
 
 ### Rôle des tables
 
@@ -163,6 +144,7 @@ Le plugin utilise les tables suivantes :
 - `activity` : suivi d’activité par utilisateur et par cours
 - `dispatch` : historique du dernier envoi par règle/utilisateur
 - `optout` : désinscription des rappels
+- `course_rules` : configuration des rappels par cours
 
 ---
 
@@ -209,12 +191,12 @@ WHERE user_id = 328
 
 ## Limitations de cette première version
 
-Cette première version est volontairement simple :
+Cette version introduit une configuration par cours, mais reste volontairement simple :
 
-- configuration des règles en JSON ;
-- configuration centralisée au niveau plugin ;
-- pas encore d’interface dédiée par cours ;
-- pas encore de journal d’administration détaillé des envois.
+- une règle d’inactivité par cours ;
+- configuration technique séparée de la configuration métier ;
+- pas encore de journal d’administration détaillé des envois ;
+- l’intégration UI dans l’onglet Paramètres doit être validée dans votre ILIAS 10.5 exact.
 
 ---
 

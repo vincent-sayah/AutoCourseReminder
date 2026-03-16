@@ -16,6 +16,7 @@ class ilAutoCourseReminderPlugin extends ilUserInterfaceHookPlugin implements il
     public const TABLE_ACTIVITY = 'ui_uihk_acrm_activity';
     public const TABLE_DISPATCH = 'ui_uihk_acrm_dispatch';
     public const TABLE_OPTOUT = 'ui_uihk_acrm_optout';
+    public const TABLE_COURSE_RULES = 'ui_uihk_acrm_crule';
 
     protected function init(): void
     {
@@ -24,6 +25,7 @@ class ilAutoCourseReminderPlugin extends ilUserInterfaceHookPlugin implements il
         require_once __DIR__ . '/class.ilAutoCourseReminderService.php';
         require_once __DIR__ . '/class.ilAutoCourseReminderCronJob.php';
         require_once __DIR__ . '/class.ilAutoCourseReminderMailAdapter.php';
+        require_once __DIR__ . '/class.ilAutoCourseReminderCourseSettingsGUI.php';
     }
 
     public function getPluginName(): string
