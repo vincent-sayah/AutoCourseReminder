@@ -1,0 +1,48 @@
+plugin_name#:#AutoCourseReminder
+config_title#:#Configuration des rappels automatiques
+save#:#Enregistrer
+config_saved#:#Configuration enregistrée.
+base_url#:#URL de base ILIAS
+base_url_info#:#Laisser vide pour utiliser ILIAS_HTTP_PATH.
+client_id#:#Client ID
+mail_from#:#Adresse expéditeur
+mail_from_name#:#Nom expéditeur
+rules_json#:#Règles JSON
+rules_json_info#:#Une règle par cours. Types supportés : inactivity, step.
+optout_saved#:#Vos rappels pour ce cours ont été désactivés.
+optout_invalid#:#Lien de désactivation invalide ou expiré.
+technical_settings#:#Paramètres techniques
+course_level_configuration#:#Paramétrage par cours
+course_level_configuration_hint#:#Configuration des notifications
+course_level_configuration_hint_value#:#Les rappels se configurent désormais dans chaque cours, dans l’onglet Paramètres.
+course_settings_tab#:#Rappels automatiques
+course_settings_form_title#:#Paramètres des rappels automatiques
+course_settings_saved#:#Paramètres du cours enregistrés.
+course_rule_active#:#Activer les rappels pour ce cours
+course_rule_active_info#:#Si cette option est activée, les membres du cours avec une progression en cours peuvent recevoir des rappels en cas d’inactivité.
+delay_days#:#Délai avant le premier rappel (jours)
+delay_days_info#:#Nombre de jours d’inactivité avant l’envoi du premier rappel.
+repeat_every_days#:#Délai entre deux rappels (jours)
+repeat_every_days_info#:#Nombre de jours d’inactivité supplémentaires avant une nouvelle relance.
+max_reminders#:#Nombre maximal de rappels
+max_reminders_info#:#Nombre maximal de notifications envoyées à un utilisateur pour ce cours.
+allow_opt_out#:#Autoriser la désinscription
+allow_opt_out_info#:#Ajoute dans le message un lien permettant à l’utilisateur de ne plus recevoir les rappels pour ce cours.
+message_templates#:#Modèle du message
+subject#:#Sujet
+subject_info#:#Utilisez les variables de personnalisation listées dans l’aide affichée sous le formulaire.
+body#:#Corps du message
+body_info#:#Vous pouvez utiliser les mêmes variables que dans le sujet. Le bloc de désinscription peut être ajouté dans le corps du message.
+positive_integer_required#:#Veuillez saisir un entier strictement positif.
+template_variables_title#:#Variables disponibles
+template_variables_intro#:#Saisissez les variables ci-dessous entre doubles accolades dans le sujet ou le corps du message.
+template_var_firstname#:#Prénom de l’utilisateur
+template_var_lastname#:#Nom de l’utilisateur
+template_var_login#:#Identifiant ILIAS de l’utilisateur
+template_var_course_title#:#Titre du cours
+template_var_course_url#:#Lien vers le cours
+template_var_inactivity_days#:#Nombre de jours d’inactivité
+template_var_mail_from_name#:#Nom de l’expéditeur
+template_var_optout_block#:#Bloc de désinscription automatique
+template_subject_example#:#Exemple de sujet :
+template_body_example#:#Exemple de corps :

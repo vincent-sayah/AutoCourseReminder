@@ -1,0 +1,48 @@
+plugin_name#:#AutoCourseReminder
+config_title#:#Automatic reminder settings
+save#:#Save
+config_saved#:#Configuration saved.
+base_url#:#ILIAS base URL
+base_url_info#:#Leave empty to use ILIAS_HTTP_PATH.
+client_id#:#Client ID
+mail_from#:#Sender address
+mail_from_name#:#Sender name
+rules_json#:#Rules JSON
+rules_json_info#:#One rule per course. Supported types: inactivity, step.
+optout_saved#:#Your reminders for this course have been disabled.
+optout_invalid#:#Invalid or expired disable link.
+technical_settings#:#Technical settings
+course_level_configuration#:#Course-level configuration
+course_level_configuration_hint#:#Reminder configuration
+course_level_configuration_hint_value#:#Reminders are now configured in each course, in the Settings tab.
+course_settings_tab#:#Automatic reminders
+course_settings_form_title#:#Automatic reminder settings
+course_settings_saved#:#Course settings saved.
+course_rule_active#:#Enable reminders for this course
+course_rule_active_info#:#If enabled, course members with learning progress in progress may receive reminders when inactive.
+delay_days#:#Delay before first reminder (days)
+delay_days_info#:#Number of inactivity days before the first reminder is sent.
+repeat_every_days#:#Delay between reminders (days)
+repeat_every_days_info#:#Number of additional inactivity days before another reminder can be sent.
+max_reminders#:#Maximum number of reminders
+max_reminders_info#:#Maximum number of notifications sent to a user for this course.
+allow_opt_out#:#Allow opt-out
+allow_opt_out_info#:#Adds a link in the message so the user can stop receiving reminders for this course.
+message_templates#:#Message template
+subject#:#Subject
+subject_info#:#Use the personalization variables listed in the help block displayed below the form.
+body#:#Message body
+body_info#:#You can use the same variables as in the subject. The opt-out block can be added in the message body.
+positive_integer_required#:#Please enter a strictly positive integer.
+template_variables_title#:#Available variables
+template_variables_intro#:#Use the variables below between double curly braces in the subject or the message body.
+template_var_firstname#:#User first name
+template_var_lastname#:#User last name
+template_var_login#:#User ILIAS login
+template_var_course_title#:#Course title
+template_var_course_url#:#Course link
+template_var_inactivity_days#:#Number of inactivity days
+template_var_mail_from_name#:#Sender name
+template_var_optout_block#:#Automatic opt-out block
+template_subject_example#:#Subject example:
+template_body_example#:#Body example:
